@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+</head>
+
+<body>
+
+    Добро пожаловать, <a th:text="${username}">admin</a>
+
+    <br />
+
+    <table border="1">
+        <tr>
+            <th>Login</th>
+            <th>Name</th>
+            <th>Lastname</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Details</th>
+        </tr>
+
+        <div th:each="user : ${userAll}">
+            <tr>
+                <td><a th:text="${user.getUsername()}">firstname</a></td>
+                <td><a th:text="${user.getFirstname()}">firstname</a></td>
+                <td><a th:text="${user.getLastname()}">lastname</a></td>
+                <td><a th:text="${user.getEmail()}">email</a></td>
+                <td><a th:text="${user.getRoles().toString()}">roles</a></td>
+                <td><a th:href="@{/admin/{id}(id=${user.getId()})}">detail</a></td>
+            </tr>
+        </div>
+    </table>
+
+    <p><a href="/admin/new">Регистрация нового пользователя</a></p>
+
+    <p><a href="/user">Профиль</a></p>
+
+    <p><a href="/">Страница приветствия</a></p>
+
+    <hr />
+    <p><a href="/auth/logout">Выйти</a></p>
+</body>
+
+</html>
