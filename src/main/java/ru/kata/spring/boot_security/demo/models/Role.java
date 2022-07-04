@@ -34,4 +34,9 @@ public class Role {
     public String toString() {
         return role;
     }
+
+    public String getRoleWithoutPrefix() {
+        StringBuilder s = new StringBuilder(role);
+        return s.delete(0, 5).toString();
+    }
 }
