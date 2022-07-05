@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-public class UserServiceImpl implements UserServiceInt {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 

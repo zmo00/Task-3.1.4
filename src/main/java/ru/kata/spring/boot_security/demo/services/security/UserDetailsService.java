@@ -27,6 +27,6 @@ public class UserDetailsService implements org.springframework.security.core.use
             throw new UsernameNotFoundException("User not found!");
         }
 
-        return new ru.kata.spring.boot_security.demo.security.UserDetails(userOptional.get());
+        return userOptional.get();
     }
 }

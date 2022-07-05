@@ -3,10 +3,11 @@ package ru.kata.spring.boot_security.demo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.services.database.RoleServiceInt;
-import ru.kata.spring.boot_security.demo.services.database.UserServiceInt;
+import ru.kata.spring.boot_security.demo.services.database.RoleService;
+import ru.kata.spring.boot_security.demo.services.database.UserService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,11 +18,17 @@ public class SpringBootSecurityDemoApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(SpringBootSecurityDemoApplication.class, args);
-		UserServiceInt userServiceInt = context.getBean(UserServiceInt.class);
-		RoleServiceInt roleServiceInt = context.getBean(RoleServiceInt.class);
+
+		UserService userServiceInt = context.getBean(UserService.class);
+		RoleService roleServiceInt = context.getBean(RoleService.class);
+		PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
+
 		if (userServiceInt.readAll().isEmpty() && roleServiceInt.readAll().isEmpty()) {
 			User admin = new User("admin", "admin", "adminFirstname", "userLastname", "admin@mail.ru");
 			User user = new User("user", "user", "userFirstname", "userLastname", "user@mail.ru");
+
+			admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
 
 			Role adminRole = new Role("ROLE_ADMIN");
 			Role userRole = new Role("ROLE_USER");

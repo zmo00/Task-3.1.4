@@ -1,11 +1,12 @@
 package ru.kata.spring.boot_security.demo.services.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.services.database.RoleServiceInt;
-import ru.kata.spring.boot_security.demo.services.database.UserServiceInt;
+import ru.kata.spring.boot_security.demo.services.database.RoleService;
+import ru.kata.spring.boot_security.demo.services.database.UserService;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -13,31 +14,28 @@ import java.util.Optional;
 @Service
 public class RegistrationService {
 
-    private final UserServiceInt userServiceInt;
+    private final UserService userServiceInt;
 
-    private final RoleServiceInt roleServiceInt;
+    private final RoleService roleServiceInt;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public RegistrationService(UserServiceInt userServiceInt, RoleServiceInt roleServiceInt) {
+    public RegistrationService(UserService userServiceInt, RoleService roleServiceInt, PasswordEncoder passwordEncoder) {
         this.userServiceInt = userServiceInt;
         this.roleServiceInt = roleServiceInt;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void register(User user) {
-        Optional<Role> roleOptional = roleServiceInt.findByRole("ROLE_USER");
-        if (roleOptional.isPresent()) {
-            Role userRole = roleOptional.get();
-            userRole.getUsers().add(user);
-            user.setRoles(Collections.singletonList(userRole));
-            roleServiceInt.update(userRole);
-            userServiceInt.create(user);
-        } else {
-            Role userRole = new Role("ROLE_USER");
-            userRole.setUsers(Collections.singletonList(user));
-            user.setRoles(Collections.singletonList(userRole));
-            roleServiceInt.create(userRole);
-            userServiceInt.create(user);
-        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        Role userRole = roleServiceInt.findByRole("ROLE_USER").orElse(new Role("ROLE_USER"));
+        userRole.getUsers().add(user);
+        user.setRoles(Collections.singletonList(userRole));
+
+        roleServiceInt.update(userRole);
+        userServiceInt.create(user);
     }
 
 }
