@@ -21,8 +21,8 @@ public class UserController {
 
     @GetMapping
     public String userPage(Model model, Authentication authentication) {
-        model.addAttribute("user", userServiceInt.findByUsername(authentication.getName()).get());
-        return "/user/userPage";
+        model.addAttribute("user", userServiceInt.findByUsername(authentication.getName()).orElseThrow());
+        return "/userPage";
     }
 
 }

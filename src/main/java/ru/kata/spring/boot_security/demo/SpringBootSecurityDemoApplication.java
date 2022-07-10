@@ -24,7 +24,7 @@ public class SpringBootSecurityDemoApplication {
 		PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
 
 		if (userServiceInt.readAll().isEmpty() && roleServiceInt.readAll().isEmpty()) {
-			User admin = new User("admin", "admin", "adminFirstname", "userLastname", "admin@mail.ru");
+			User admin = new User("admin", "admin", "adminFirstname", "adminLastname", "admin@mail.ru");
 			User user = new User("user", "user", "userFirstname", "userLastname", "user@mail.ru");
 
 			admin.setPassword(passwordEncoder.encode(admin.getPassword()));

@@ -38,9 +38,8 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "roleId")
+            joinColumns = @JoinColumn,
+            inverseJoinColumns = @JoinColumn
     )
     private List<Role> roles;
 
@@ -63,6 +62,19 @@ public class User implements UserDetails {
         return username + "{" +
                 lastname + "_" +
                 firstname.charAt(0) + "}";
+    }
+
+    public String getRolesAsString() {
+        if (roles.size() == 1) {
+            return roles.get(0).getRoleWithoutPrefix();
+        } else {
+            StringBuilder roleList = new StringBuilder(roles.get(0).getRoleWithoutPrefix());
+            for (int i = 1; i < roles.size(); i++) {
+                roleList.append(", ")
+                        .append(roles.get(i).getRoleWithoutPrefix());
+            }
+            return roleList.toString();
+        }
     }
 
     @Override

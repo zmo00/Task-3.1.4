@@ -8,7 +8,7 @@ public class InitController {
 
     @GetMapping
     public String start() {
-        return "index";
+        return "redirect:/auth/login";
     }
 
 }

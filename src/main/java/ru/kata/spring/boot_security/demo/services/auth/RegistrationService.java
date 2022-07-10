@@ -8,34 +8,38 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.database.RoleService;
 import ru.kata.spring.boot_security.demo.services.database.UserService;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class RegistrationService {
 
-    private final UserService userServiceInt;
+    private final UserService userService;
 
-    private final RoleService roleServiceInt;
+    private final RoleService roleService;
 
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public RegistrationService(UserService userServiceInt, RoleService roleServiceInt, PasswordEncoder passwordEncoder) {
-        this.userServiceInt = userServiceInt;
-        this.roleServiceInt = roleServiceInt;
+        this.userService = userServiceInt;
+        this.roleService = roleServiceInt;
         this.passwordEncoder = passwordEncoder;
     }
 
     public void register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        Role userRole = roleServiceInt.findByRole("ROLE_USER").orElse(new Role("ROLE_USER"));
-        userRole.getUsers().add(user);
-        user.setRoles(Collections.singletonList(userRole));
+        List<Role> roleList = user.getRoles();
+        for (Role role : roleList) {
+            role.getUsers().add(user);
+        }
 
-        roleServiceInt.update(userRole);
-        userServiceInt.create(user);
+        user.setRoles(roleList);
+
+        for (Role role : roleList) {
+            roleService.update(role);
+        }
+        userService.create(user);
     }
 
 }
